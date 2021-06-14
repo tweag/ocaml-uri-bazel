@@ -1,0 +1,71 @@
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+load(
+    "@obazl_rules_ocaml//ocaml:rules.bzl",
+    "ocaml_signature",
+    "ocaml_module",
+    "ocaml_library",
+)
+
+genrule(
+    name = "gen_uri_services",
+    srcs = ["services.short", "uri_services_raw.ml"],
+    outs = ["__obazl/uri_services.ml"],
+    cmd = "$(execpath //config:exe) $(execpath services.short) > $@ && cat $(execpath uri_services_raw.ml) >> $@",
+    tools = ["//config:exe"],
+)
+
+copy_file(
+    name = "uri_services_mli",
+    src = ":uri_services.mli",
+    out = "__obazl/uri_services.mli",
+)
+
+ocaml_signature(
+    name = "uri_services_sig",
+    src = "uri_services_mli",
+    deps = ["//lib:lib-uri"],
+)
+
+ocaml_module(
+    name = "uri_services",
+    struct = ":gen_uri_services",
+    sig = ":uri_services_sig",
+)
+
+ocaml_library(
+    name = "services_short",
+    modules = [":uri_services"],
+    visibility = ["//visibility:public"],
+)
+
+genrule(
+    name = "gen_uri_services_full",
+    srcs = ["services.full", "uri_services_raw.ml"],
+    outs = ["__obazl/uri_services_full.ml"],
+    cmd = "$(execpath //config:exe) $(execpath services.full) > $@ && cat $(execpath uri_services_raw.ml) >> $@",
+    tools = ["//config:exe"],
+)
+
+copy_file(
+    name = "uri_services_full_mli",
+    src = ":uri_services_full.mli",
+    out = "__obazl/uri_services_full.mli",
+)
+
+ocaml_signature(
+    name = "uri_services_full_sig",
+    src = "uri_services_full_mli",
+    deps = ["//lib:lib-uri"],
+)
+
+ocaml_module(
+    name = "uri_services_full",
+    struct = ":gen_uri_services_full",
+    sig = ":uri_services_full_sig",
+)
+
+ocaml_library(
+    name = "services_full",
+    modules = [":uri_services_full"],
+    visibility = ["//visibility:public"],
+)

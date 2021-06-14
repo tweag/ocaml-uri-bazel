@@ -1,0 +1,17 @@
+load(
+    "@obazl_rules_ocaml//ocaml:rules.bzl",
+    "ocaml_executable",
+    "ocaml_module",
+)
+
+ocaml_module(
+    name = "gen_services",
+    deps_opam = ["stringext"],
+    struct = "gen_services.ml",
+)
+
+ocaml_executable(
+    name = "exe",
+    main = "gen_services",
+    visibility = ["//visibility:public"],
+)

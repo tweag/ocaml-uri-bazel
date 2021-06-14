@@ -1,0 +1,12 @@
+*.install
+.*.swp
+.merlin
+_build/
+_opam/
+/a.out
+/bazel-bin
+/bazel-ocaml-uri-bazel
+/bazel-out
+/bazel-testlogs
+/bazel-ocaml-uri-bazel-build
+/bazel

@@ -1,0 +1,24 @@
+load(
+    "@obazl_rules_ocaml//ocaml:rules.bzl",
+    "ocaml_signature",
+    "ocaml_module",
+    "ocaml_library",
+)
+
+ocaml_signature(
+    name = "uri_sig",
+    src = "uri.mli",
+    deps_opam = ["angstrom"],
+)
+ocaml_module(
+    name = "uri",
+    struct = "uri.ml",
+    sig = "uri_sig",
+    deps_opam = ["stringext", "angstrom"],
+)
+
+ocaml_library(
+    name = "lib-uri",
+    modules = ["uri"],
+    visibility = ["//visibility:public"],
+)
